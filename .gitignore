@@ -23,3 +23,10 @@
 /app/Config/core.php
 /app/Config/database.php
 /vendors/*
+
+
+# other
+Vagrantfile
+
+# EC-CUBE
+
