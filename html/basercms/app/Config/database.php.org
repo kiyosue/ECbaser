@@ -1,0 +1,42 @@
+<?php
+//
+// Database Configuration File created by baserCMS Installation
+//
+class DATABASE_CONFIG {
+public $baser = array(
+	'datasource' => 'Database/BcPostgres',
+	'persistent' => false,
+	'host' => 'localhost',
+	'port' => '5432',
+	'login' => 'postgres',
+	'password' => 'passowrd',
+	'database' => 'basercms',
+	'schema' => 'public',
+	'prefix' => 'mysite_',
+	'encoding' => 'utf8'
+);
+public $plugin = array(
+	'datasource' => 'Database/BcPostgres',
+	'persistent' => false,
+	'host' => 'localhost',
+	'port' => '5432',
+	'login' => 'postgres',
+	'password' => 'password',
+	'database' => 'basercms',
+	'schema' => 'public',
+	'prefix' => 'mysite_pg_',
+	'encoding' => 'utf8'
+);
+public $test = array(
+	'datasource' => 'Database/BcPostgres',
+	'persistent' => false,
+	'host' => 'localhost',
+	'port' => '5432',
+	'login' => 'postgres',
+	'password' => 'password',
+	'database' => 'basercms',
+	'schema' => 'public',
+	'prefix' => 'mysite_test_',
+	'encoding' => 'utf8'
+);
+}

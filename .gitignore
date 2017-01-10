@@ -27,6 +27,26 @@
 
 # other
 Vagrantfile
+.vagrant
+default_db/*
 
 # EC-CUBE
+data/cache/mtb*
+data/Smarty/templates_c/*
+html/install/temp/%%*
+html/install/temp/install.log
+data/config/config.php
+data/logs/admin.log
+
+
+# baserCMS
+html/basercms/app/tmp/cache/models/myapp_*
+html/basercms/app/tmp/cache/datas/mysite_*
+html/basercms/app/tmp/logs/error.log
+html/basercms/app/tmp/sessions/sess*
+html/basercms/app/tmp/cache/environment/myapp_*
+html/basercms/app/tmp/cache/persistent/myapp_*
+
+html/basercms/app/Config/install.php
+html/basercms/app/Config/database.php
 
