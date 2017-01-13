@@ -37,6 +37,7 @@ html/install/temp/%%*
 html/install/temp/install.log
 data/config/config.php
 data/logs/admin.log
+data/logs/plugin.log
 
 
 # baserCMS
