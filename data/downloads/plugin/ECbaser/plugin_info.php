@@ -36,7 +36,7 @@ class plugin_info {
     /** プラグインバージョン(必須)：プラグインのバージョン. */
     static $PLUGIN_VERSION    = "0.1";
     /** 対応バージョン(必須)：対応するEC-CUBEバージョン. */
-    static $COMPLIANT_VERSION = " 2.12.2";
+    static $COMPLIANT_VERSION = " 2.13.5";
     /** 作者(必須)：プラグイン作者. */
     static $AUTHOR = "株式会社アイティマネジメント";
     /** 説明(必須)：プラグインの説明. */
