@@ -294,6 +294,16 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
         $result = "";
         if($contents){
             $dispatcher = new Dispatcher();
+            //下記の２つをbaserCMS側に設定する必要がある。が制御できないので、 basercms/app/Controller AppController.php に追記した
+//                $this->Security->validatePost = false;
+//                $this->Security->csrfCheck = false;
+            // ecbaserというflagを立てる これをkeyにして、AppControllerで制御を行う。
+            $event = $dispatcher->getEventManager();
+            $event->attach(function(){
+                Configure::write('eccubeEcbaserFlag', true);
+            },'ECCUBE.ECbaser.writeConfig');
+            $event->dispatch('ECCUBE.ECbaser.writeConfig');
+
             $result = $dispatcher->dispatch(new CakeRequest($dispatch), new CakeResponse(), array('return'=>false,'bare'=>$bare));
             switch($contents){
                 case 'blog' :

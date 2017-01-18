@@ -31,4 +31,20 @@ App::uses('BcAppController', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends BcAppController {
+
+    /**
+     * beforeFilter
+     *
+     * @return	void
+     * @access	public
+     */
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
+        // ecbaserならOffにする
+        if(Configure::read('eccubeEcbaserFlag') === true){
+            $this->Security->validatePost = false;
+            $this->Security->csrfCheck = false;
+        }
+    }
 }

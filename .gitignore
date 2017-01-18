@@ -42,13 +42,14 @@ data/logs/error.log
 data/logs/site.log
 
 # baserCMS
-html/basercms/app/tmp/cache/models/myapp_*
-html/basercms/app/tmp/cache/datas/mysite_*
 html/basercms/app/tmp/logs/error.log
 html/basercms/app/tmp/logs/debug.log
 html/basercms/app/tmp/sessions/sess*
+html/basercms/app/tmp/cache/models/myapp_*
+html/basercms/app/tmp/cache/datas/mysite_*
 html/basercms/app/tmp/cache/environment/myapp_*
 html/basercms/app/tmp/cache/persistent/myapp_*
+html/basercms/app/tmp/cache/views/*
 
 html/basercms/app/Config/install.php
 html/basercms/app/Config/database.php
