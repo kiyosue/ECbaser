@@ -44,7 +44,7 @@ class plugin_info {
     /** プラグインURL：プラグイン毎に設定出来るURL（説明ページなど） */
     static $PLUGIN_SITE_URL = "http://www.itm.ne.jp/service/ecbaser";
     /** 作者URL */
-    static $AUTHOR_SITE_URL = "http://www.itm.ne.jp/";
+    static $AUTHOR_SITE_URL = "http://www.itm.co.jp/";
 
     //ローカルフックポイントの指定
     static $HOOK_POINTS = array(

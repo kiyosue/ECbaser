@@ -93,21 +93,21 @@ class LC_Page_Plugin_ECbaser_Config extends LC_Page_Admin_Ex {
             $arrForm['baser_install_dir'] = $plugin['free_field1'];
 
             //DB情報(baserの)(ec-cubeを共有できるよん)
-            $cake_db_conf = $_SERVER['DOCUMENT_ROOT'] . $arrForm['baser_install_dir'] . '/app/config/database.php';
+            $cake_db_conf = $_SERVER['DOCUMENT_ROOT'] . $arrForm['baser_install_dir'] . '/app/Config/database.php';
             if( file_exists($cake_db_conf) ){
                 require_once($cake_db_conf);
                 $database_config = new DATABASE_CONFIG();
-                $this->tpl_database = "(可) " . str_replace("bc_","",$database_config->baser['driver']) . ' : ' . $this->tpl_database = $database_config->baser['database'];
+                $this->tpl_database = "(可) " . $this->tpl_database = $database_config->baser['database'];
             } else {
                 $this->tpl_database = "(不可) 設定ファイルがみつかりません path = {$cake_db_conf}";
             }
 
             //webrootのファイルがあるか
-            $webroot_path = $_SERVER['DOCUMENT_ROOT'] . $arrForm['baser_install_dir'] . '/app/webroot/index.php';
+            $webroot_path = $_SERVER['DOCUMENT_ROOT'] . $arrForm['baser_install_dir'] . '/index.php';
             if( file_exists($webroot_path) ){
                 $this->tpl_basercms = "(可) webrootが $webroot_path にあります。";
             } else {
-                $this->tpl_basercms = "(不可) ファイルがみつかりません path = {$cake_db_conf}";
+                $this->tpl_basercms = "(不可) ファイルがみつかりません path = {$webroot_path}";
             }
 
             $this->tpl_index = HTTP_URL . "{$this->default_html_dir}/index.php?name=index";

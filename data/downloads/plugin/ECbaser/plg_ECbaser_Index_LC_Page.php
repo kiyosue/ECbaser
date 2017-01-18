@@ -53,6 +53,9 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
      */
     function process() {
         $this->action();
+        if(! isset($this->tpl_page_class_name)){
+            $this->tpl_page_class_name = '';
+        }
         $this->sendResponse();
     }
 
@@ -65,7 +68,7 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
 
         $this->plugin = SC_Plugin_Util_Ex::getPluginByPluginCode("ECbaser");
         $this->baser_dir = $this->plugin['free_field1'];
-        $this->baser_path = $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir . '/app/webroot/index.php';
+        $this->baser_path = $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir . '/index.php';
         $this->tpl_mainpage =  TEMPLATE_REALDIR . strtolower($this->plugin['plugin_code']) . "/plg_ECbaser_index.tpl";
         $this->tpl_subtitle = 'baserCMS';
         $this->ecbaser_index = "";
@@ -112,7 +115,6 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
             exit;
         }
 
-
         //スタイルシート の場合
         if( substr($url, strrpos($url, '.') + 1) == 'css'){
             $result = $this->getBaserContent($url, false, false);
@@ -139,8 +141,7 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
     function getBlogReplace($result)
     {
         // ecbaser/index.php/ecbaser/index.phpとなる場合がある
-        $result = str_replace("ecbaser/index.php/ecbaser/index.php", "ecbaser/index.php", $result);//2重になるので、変更
-        $result = str_replace('/ecbaser/app/webroot', $this->baser_dir . "/app/webroot", $result);
+        $result = str_replace("/index.php/index.php", "/index.php", $result);//2重になるので、変更
         $result = str_replace('</fieldset></form>', "</fieldset><input type=\"hidden\" name=\"" .  TRANSACTION_ID_NAME  . "\" value=\"" . $this->transactionid . "\"></form>", $result);
 
         if( $result == 'Object' ){
@@ -184,7 +185,8 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
      * @return void
      */
     function destroy() {
-        parent::destroy();
+//        2.13.0にて実装がなくなったのでコメントアウト
+//        parent::destroy();
     }
 
 
@@ -197,13 +199,46 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
      */
     function getBaserContent($dispatch, $search = false, $bare = false)
     {
-        define('ROOT', $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir );
-        define('CAKE_CORE_INCLUDE_PATH', $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir );
-        define('WWW_ROOT', ROOT . '/app/webroot/');
-        define('WEBROOT_DIR', 'webroot');
 
-        $_GET['url'] = 'favicon.ico';
-        require_once $this->baser_path;
+        $fileName = $_SERVER['SCRIPT_FILENAME'];
+        ini_set('date.timezone', 'Asia/Tokyo');
+        @putenv("TZ=JST-9");
+        if (!defined('DS')) {
+            define('DS', DIRECTORY_SEPARATOR);
+        }
+        $fileName = str_replace('/', DS, $fileName);
+
+        if (!defined('ROOT')) {
+            define('ROOT', $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir );
+        }
+        if (!defined('APP_DIR')) {
+            define('APP_DIR', 'app');
+        }
+        if (!defined('WEBROOT_DIR')) {
+            define('WEBROOT_DIR', 'webroot');
+        }
+        if (!defined('WWW_ROOT')) {
+            define('WWW_ROOT', ROOT . '/');
+        }
+
+        if (!defined('CAKE_CORE_INCLUDE_PATH')) {
+            if (function_exists('ini_set')) {
+                ini_set('include_path', ROOT . DS . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
+            }
+            if (!include 'Cake' . DS . 'bootstrap.php') {
+                $failed = true;
+            }
+        } else {
+            if (!include CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php') {
+                $failed = true;
+            }
+        }
+        if (!empty($failed)) {
+            trigger_error("CakePHP core could not be found. Check the value of CAKE_CORE_INCLUDE_PATH in APP/webroot/index.php. It should point to the directory containing your " . DS . "cake core directory and your " . DS . "vendors root directory.", E_USER_ERROR);
+        }
+
+        App::uses('Dispatcher', 'Routing');
+
         Configure::write('App.baseUrl', $_SERVER['SCRIPT_NAME']);//smart url を強制OFF
         $result = "";
         $contents = false ;
@@ -211,7 +246,7 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
         if( $search ){
             //blogかcontactか、pageかで処理の振り分け
             //公開blogか？
-            $cake_db_conf = $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir . '/app/config/database.php';
+            $cake_db_conf = $_SERVER['DOCUMENT_ROOT'] . $this->baser_dir . '/app/Config/database.php';
             if( file_exists($cake_db_conf) ){
                 require_once($cake_db_conf);
                 $database_config = new DATABASE_CONFIG();
@@ -224,8 +259,8 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
             $query = "SELECT status FROM {$table_name} as t1 WHERE name = '{$this->name}' ";
             $rst = $model->query($query);
 
-            if( isset($rst[0]['t1']['status']) ){
-                if($rst[0]['t1']['status'] == 1 ){
+            if( isset($rst[0][0]['status']) ){
+                if($rst[0][0]['status'] == true ){
                     $contents = 'blog';
                 }
             }else{
@@ -240,10 +275,10 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
                 );
                 $form = $model->find('first', $params);
                 */
-                $query = "SELECT name,status FROM bc_pg_mail_contents as t1 WHERE name = '{$this->name}' ";
+                $query = "SELECT name,status FROM {$database_config->plugin['prefix']}mail_contents as t1 WHERE name = '{$this->name}' ";
                 $rst = $model->query($query);
-                if( isset($rst[0]['t1']['status']) ){
-                    if($rst[0]['t1']['status'] == 1 ){
+                if( isset($rst[0][0]['status']) ){
+                    if($rst[0][0]['status'] == 1 ){
                         $contents = 'contact';
                         if( $this->name == $dispatch ){
                             $dispatch .= "/index";
@@ -256,12 +291,10 @@ class LC_Page_ECbaser_Index extends LC_Page_Ex {
         }else{
             $contents = true;
         }
-
         $result = "";
         if($contents){
             $dispatcher = new Dispatcher();
-            $result = $dispatcher->dispatch($dispatch, array('return'=>false,'bare'=>$bare));
-
+            $result = $dispatcher->dispatch(new CakeRequest($dispatch), new CakeResponse(), array('return'=>false,'bare'=>$bare));
             switch($contents){
                 case 'blog' :
                     $result = $this->getBlogReplace($result);
